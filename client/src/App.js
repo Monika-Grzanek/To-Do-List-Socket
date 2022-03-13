@@ -20,17 +20,19 @@ const App = () =>  {
   };
 
   const removeTask = (id, local=false) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+    tasks.splice(tasks.findIndex((task) => task.id === id), 1);
     if(local) {
       socket.emit('removeTask', id)
     }
   };
 
-  const submitForm = (event) => {
-    event.preventDefault();
-    addTask(taskName);
+  const submitForm = (e) => {
+    e.preventDefault();
+    const id = uuidv4();
+    const newTaskAdd = {id, name: taskName};
+    addTask(newTaskAdd);
     setTaskName('')
-    socket.emit('addTask', taskName);
+    socket.emit('addTask', newTaskAdd);
   }
 
   const addTask = (task) => {
@@ -48,10 +50,10 @@ const App = () =>  {
           <h2>Tasks</h2>
 
           <ul className="tasks-section__list" id="tasks-list">
-            {tasks.map(task=> <li key={task.id} class="task">{task} <button class="btn btn--red" onClick={() => removeTask(task.id, true)}>Remove</button></li>)}
+            {tasks.map(({id, name})=> <li key={id} className="task">{name} <button class="btn btn--red" onClick={() => removeTask(id, true)}>Remove</button></li>)}
           </ul>
 
-          <form id="add-task-form" onSubmit={submitForm}>
+          <form id="add-task-form" onSubmit={e => submitForm(e)}>
             <input className="text-input" autocomplete="off" type="text" placeholder="Type your description" id="task-name" value={taskName} onChange={e => setTaskName(e.currentTarget.value)} />
             <button className="btn" type="submit">Add</button>
           </form>
@@ -59,8 +61,6 @@ const App = () =>  {
         </section>
       </div>
     );
-
-
 };
 
 export default App;

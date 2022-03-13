@@ -20,14 +20,14 @@ io.on('connection', (socket) => {
     io.to(socket.id).emit("updateData", tasks);
     console.log('New user:', socket.id );
 
-    socket.on('addTask', (newTask) => {
-        tasks.push(newTask);
+    socket.on('addTask', (task) => {
+        tasks.push(task);
         socket.broadcast.emit('addTask', tasks);
         console.log('Actually tasks:', tasks);
     });
 
-    socket.on('removeTask', (indexOfRemoveElement) => {
-        tasks.splice(indexOfRemoveElement, 1);
+    socket.on('removeTask', (id) => {
+        tasks.splice(id, 1);
         socket.broadcast.emit('removeTask', tasks);
         console.log('Actually tasks:', tasks);
     })

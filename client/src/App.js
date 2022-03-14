@@ -10,17 +10,18 @@ const App = () =>  {
   const [taskName, setTaskName] = useState('');
 
 
-  const socket = io("localhost:8000");
+  const socket = io("localhost:8000", { transports: ['websocket'] });
+  socket.on('updateData', (data) => updateTasks(data));
   socket.on('addTask', (task) => addTask(task));
   socket.on('removeTask', (id) => removeTask(id));
-  socket.on('updateData', (data) => updateTasks(data));
+
 
   const updateTasks = (newTask) => {
     setTasks(newTask);
   };
 
   const removeTask = (id, local=false) => {
-    tasks.splice(tasks.findIndex((task) => task.id === id), 1);
+    setTasks(tasks.filter(task => task.id !== id));
     if(local) {
       socket.emit('removeTask', id)
     }
@@ -36,7 +37,8 @@ const App = () =>  {
   }
 
   const addTask = (task) => {
-    setTasks([...tasks, task]);
+    tasks.push(task);
+    console.log('show tasks', tasks)
   }
 
     return (

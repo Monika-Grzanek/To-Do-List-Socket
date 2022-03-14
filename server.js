@@ -18,16 +18,22 @@ const io = socket(server);
 io.on('connection', (socket) => {
     io.to(socket.id).emit("updateData", tasks);
     console.log('New user:', socket.id );
+    console.log('tasks', tasks)
 
     socket.on('addTask', (task) => {
         tasks.push(task);
         socket.broadcast.emit('addTask', task);
+        console.log('added task')
         console.log('Actually tasks:', tasks);
     });
 
     socket.on('removeTask', (id) => {
         tasks.splice(tasks.findIndex((task) => task.id === id), 1);
         socket.broadcast.emit('removeTask', id);
+        console.log('removed task')
         console.log('Actually tasks:', tasks);
     })
+    socket.on('disconnect', () => {
+        console.log(`Socket ${socket.id} left`);
+    });
 });

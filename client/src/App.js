@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -8,12 +8,14 @@ const App = () =>  {
 
   const [tasks, setTasks] = useState([]) ;
   const [taskName, setTaskName] = useState('');
+  const [socket, setSocket] = useState(null);
 
-
-  const socket = io("localhost:8000", { transports: ['websocket'] });
-  socket.on('updateData', (data) => updateTasks(data));
-  socket.on('addTask', (task) => addTask(task));
-  socket.on('removeTask', (id) => removeTask(id));
+    useEffect(() => {
+      setSocket(io("localhost:8000", { transports: ['websocket'] }));
+      socket.on('updateData', (data) => updateTasks(data));
+      socket.on('addTask', (task) => addTask(task));
+      socket.on('removeTask', (id) => removeTask(id));
+    }, []);
 
 
   const updateTasks = (newTask) => {

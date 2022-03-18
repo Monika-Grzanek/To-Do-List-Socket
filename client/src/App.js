@@ -10,12 +10,17 @@ const App = () =>  {
   const [taskName, setTaskName] = useState('');
   const [socket, setSocket] = useState(null);
 
-    useEffect(() => {
-      setSocket(io("localhost:8000", { transports: ['websocket'] }));
+  useEffect(() => {
+    setSocket(io("localhost:8000", { transports: ['websocket'] }));
+  }, []);
+
+  useEffect(() => {
+    if(socket) {
       socket.on('updateData', (data) => updateTasks(data));
       socket.on('addTask', (task) => addTask(task));
       socket.on('removeTask', (id) => removeTask(id));
-    }, []);
+    }
+  }, [socket]);
 
 
   const updateTasks = (newTask) => {

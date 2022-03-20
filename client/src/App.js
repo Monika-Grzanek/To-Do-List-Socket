@@ -44,7 +44,7 @@ const App = () =>  {
   }
 
   const addTask = (task) => {
-    tasks.push(task);
+    setTasks(([...tasks, task]));
     console.log('show tasks', tasks)
   }
 

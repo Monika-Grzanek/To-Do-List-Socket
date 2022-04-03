@@ -27,8 +27,8 @@ const App = () =>  {
     setTasks(newTask);
   };
 
-  const removeTask = (id, local=false) => {
-    setTasks(tasks.filter(task => task.id !== id));
+  const removeTask = (id, local) => {
+    setTasks((tasks => tasks.filter(task => task.id !== id)));
     if(local) {
       socket.emit('removeTask', id)
     }
@@ -44,7 +44,7 @@ const App = () =>  {
   }
 
   const addTask = (task) => {
-    setTasks(([...tasks, task]));
+    setTasks((tasks => [...tasks, task]));
     console.log('show tasks', tasks)
   }
 
